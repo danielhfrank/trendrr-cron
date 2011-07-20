@@ -3,11 +3,15 @@
  */
 package com.trendrr.cron;
 
+import static org.junit.Assert.assertEquals;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -79,18 +83,30 @@ public class CronTest {
 	public void testNextMatch() throws InvalidPatternException{
 		Date date = IsoDateUtil.parse("2011-01-03T00:01:07Z");
 		System.out.println("Start date is " + date.toString());
-		String[] patterns = {"hourly",
-				"daily",
-				"weekly",
-				"monthly",
-				"yearly"
-		};
-		for(String pattern : patterns){
+
+		Map<String, String> patternMap = new HashMap<String, String>();
+		patternMap.put("hourly", "2011-01-03T01:00:07.00Z");
+		patternMap.put("daily", "2011-01-03T05:00:07.00Z");
+		patternMap.put("weekly", "2011-01-09T05:00:07.00Z");
+		patternMap.put("monthly", "2011-02-01T05:00:07.00Z");
+		patternMap.put("yearly", "2012-01-01T05:00:07.00Z");
+		for(String pattern : patternMap.keySet()){
 			SchedulingPattern sp = new SchedulingPattern(pattern);
 			Date start = new Date();
 			Date next = sp.getNextMatchingDate(date);
 			long millis = new Date().getTime() - start.getTime();
-			System.out.println("Calculated " + pattern + " in " + millis + " millis. It was " + next.toString());
+			assertEquals(IsoDateUtil.getIsoDate(next), patternMap.get(pattern));
+			System.out.println("Calculated " + pattern + " in " + millis + " millis. It was " + IsoDateUtil.getIsoDate(next));
 		}
+	}
+	
+	/**
+	 * Parse date and go to the start of the minute (good enough for us)
+	 * @param isoDate
+	 * @return
+	 */
+	private Date normalize(String isoDate){
+		Date date = IsoDateUtil.parse(isoDate);
+		return TimeFrame.MINUTES.start(date);
 	}
 }
