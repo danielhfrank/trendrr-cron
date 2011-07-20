@@ -1,0 +1,9 @@
+#Eclipse stuff
+.classpath
+.project
+
+#complied stuff
+*.class
+
+#emacs leftovers
+*~
