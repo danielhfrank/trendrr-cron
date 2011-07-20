@@ -26,10 +26,10 @@ public class CronTest {
 
 	protected Log log = LogFactory.getLog(CronTest.class);
 	
-	public static void main(String ...strings) {
-		new CronTest().test();
-		
-	}
+//	public static void main(String ...strings) {
+//		new CronTest().test();
+//		
+//	}
 	
 	@Test
 	public void test() {
@@ -73,5 +73,24 @@ public class CronTest {
 	@Cron("daily")
 	public void daily(Date date) {
 		System.out.println("TO EXECUTE ON: " + date);
+	}
+	
+	@Test
+	public void testNextMatch() throws InvalidPatternException{
+		Date date = IsoDateUtil.parse("2011-01-03T00:01:07Z");
+		System.out.println("Start date is " + date.toString());
+		String[] patterns = {"hourly",
+				"daily",
+				"weekly",
+				"monthly",
+				"yearly"
+		};
+		for(String pattern : patterns){
+			SchedulingPattern sp = new SchedulingPattern(pattern);
+			Date start = new Date();
+			Date next = sp.getNextMatchingDate(date);
+			long millis = new Date().getTime() - start.getTime();
+			System.out.println("Calculated " + pattern + " in " + millis + " millis. It was " + next.toString());
+		}
 	}
 }
