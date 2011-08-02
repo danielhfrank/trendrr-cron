@@ -1,0 +1,1 @@
+Some additions and enhancements made to cron4j (http://www.sauronsoftware.it/projects/cron4j/), a cron-like scheduler for Java. Contributions include methods to find next matching date for a scheduling pattern
